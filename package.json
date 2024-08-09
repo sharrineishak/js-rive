@@ -4,12 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@rive-app/canvas": "^2.19.0"
+    "@rive-app/canvas-advanced": "^2.19.6",
+    "vite": "^5.4.0"
   }
 }

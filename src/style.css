@@ -9,13 +9,10 @@ body {
   font-family: "Inter", sans-serif;
 }
 
-.content {
+#content {
   position: relative;
-  top: 50vh;
-  transform: translateY(-50%);
-  width: 80%;
-  max-width: 1280px;
-  margin: auto;
+  width: 100%;
+  height: 100%;
 }
 
 #slider-wrapper {
@@ -53,11 +50,4 @@ body {
   height: 16px;
   border-radius: 8px;
   background-color: var(--slider-handle);
-}
-
-#canvas {
-  margin: auto;
-  transform: translateX(10px);
-  width: 500px;
-  height: 500px;
 }
