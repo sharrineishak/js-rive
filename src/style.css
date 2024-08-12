@@ -11,8 +11,18 @@ body {
 
 #content {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 512px;
+}
+
+#content .decor {
+  width: 512px;
+  height: 512px;
+}
+
+#content canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 #slider-wrapper {

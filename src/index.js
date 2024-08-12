@@ -12,23 +12,43 @@ async function main() {
 
   const file = await rive.load(fileBytes);
 
-  const bamboo = file.artboardByName("bamboo");
-  const animation = new rive.LinearAnimationInstance(
-    bamboo.animationByName("Timeline 1"),
-    bamboo
-  );
+  let nodes = [];
+  const decorDivs = document.querySelectorAll(".decor");
+
+  decorDivs.forEach((div) => {
+    const bounds = div.getBoundingClientRect();
+
+    const artboard = file.artboardByName("bamboo");
+    const animation = new rive.LinearAnimationInstance(
+      artboard.animationByName("Timeline 1"),
+      artboard
+    );
+    const timeOffset = Math.random() * 4;
+
+    const node = {
+      artboard: artboard,
+      animation: animation,
+      bounds: bounds,
+      timeOffset: timeOffset,
+    };
+
+    nodes.push(node);
+  });
 
   const canvas = document.getElementById("canvas");
   const renderer = rive.makeRenderer(canvas);
 
   function computeSize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const content = document.getElementById("content");
+    canvas.width = content.clientWidth;
+    canvas.height = content.clientHeight;
   }
   window.onresize = computeSize;
   computeSize();
 
   let lastTime = 0;
+
+  let firstRun = true;
 
   function renderLoop(time) {
     if (!lastTime) {
@@ -40,26 +60,30 @@ async function main() {
 
     renderer.clear();
 
-    // Draw stuff
-    animation.advance(elapsedTimeSec);
-    animation.apply(1);
-    bamboo.advance(elapsedTimeSec);
+    nodes.map((node) => {
+      node.animation.advance(firstRun ? node.timeOffset : elapsedTimeSec);
+      node.animation.apply(1);
+      node.artboard.advance(firstRun ? node.timeOffset : elapsedTimeSec);
 
-    renderer.save();
-    renderer.align(
-      rive.Fit.contain,
-      rive.Alignment.center,
-      {
-        minX: 0,
-        minY: 0,
-        maxX: canvas.width,
-        maxY: canvas.height,
-      },
-      bamboo.bounds
-    );
+      renderer.save();
 
-    bamboo.draw(renderer);
-    renderer.restore();
+      renderer.align(
+        rive.Fit.contain,
+        rive.Alignment.center,
+        {
+          minX: node.bounds.left,
+          minY: node.bounds.top,
+          maxX: node.bounds.right,
+          maxY: node.bounds.bottom,
+        },
+        node.artboard.bounds
+      );
+
+      node.artboard.draw(renderer);
+      renderer.restore();
+    });
+
+    firstRun = false;
 
     rive.requestAnimationFrame(renderLoop);
   }
@@ -67,40 +91,3 @@ async function main() {
 }
 
 main();
-
-// const canvas = document.getElementById("canvas");
-// const ctx = canvas.getContext("2d");
-
-// let bamboos = [];
-
-// function SpawnBamboo(num) {
-//   for (let i = 0; i < num; i++) {
-//     const newBamboo = new rive.Rive({
-//       src: "./src/rebung.riv",
-//       artboard: "bamboo",
-//       canvas: canvas,
-//       autoplay: true,
-//       onLoad: () => {
-//         newBamboo.resizeDrawingSurfaceToCanvas();
-//       },
-//     });
-
-//     bamboos.push(newBamboo);
-//   }
-//   drawToMainCanvas();
-// }
-
-// function drawToMainCanvas() {
-//   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-//   bamboos.forEach(({ canvas }, index) => {
-//     // Adjust the position as necessary
-//     ctx.drawImage(canvas, index * 50, 0);
-//   });
-
-//   requestAnimationFrame(drawToMainCanvas);
-// }
-
-// SpawnBamboo(12);
-
-// console.log(bamboos);

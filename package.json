@@ -13,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@rive-app/canvas-advanced": "^2.19.6",
-    "vite": "^5.4.0"
+    "@rive-app/canvas-advanced": "^2.19.7"
   }
 }
